@@ -1,0 +1,1 @@
+Leaflet 1.9.4 UI images. See ../LICENSE and ../NOTICE.txt. No map tiles are included.
