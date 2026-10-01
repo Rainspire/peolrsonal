@@ -62,10 +62,11 @@ button:disabled{opacity:.42;cursor:not-allowed}
 #scheduleReviewScroll>details,#scheduleChangedItems+.notice{margin-top:12px}
 #scheduleChangedItems{margin:14px 0}
 #scheduleConflictCause p{margin:6px 0 0;line-height:1.65}
+#scheduleApprovalTop{margin:12px 0 14px;display:flex;flex-direction:column;gap:7px}
 #scheduleApprovalFooter{flex-shrink:0;border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);display:flex;flex-direction:column;gap:7px}
-#scheduleApprovalFooter p{margin:0;overflow-wrap:anywhere}
-#scheduleApprovalFooter .btn{min-height:48px;white-space:normal;flex-shrink:0}
-#scheduleApprovalFooter [hidden]{display:none!important}
-#scheduleApprovalError:empty{display:none}
+#scheduleApprovalTop p,#scheduleApprovalFooter p{margin:0;overflow-wrap:anywhere}
+#scheduleApprovalTop .btn,#scheduleApprovalFooter .btn{min-height:48px;white-space:normal;flex-shrink:0}
+#scheduleApprovalTop [hidden],#scheduleApprovalFooter [hidden]{display:none!important}
+#scheduleApprovalErrorTop:empty,#scheduleApprovalError:empty{display:none}
 @media(max-width:380px){#sheet.schedule-review-sheet .sheet-inner{padding-left:12px;padding-right:12px}#sheet.schedule-review-sheet .sheet-head h2{font-size:18px}#scheduleApprovalFooter .btn{font-size:13px}}
 @media(max-height:420px){#sheet.schedule-review-sheet .grab{margin-bottom:7px}#sheet.schedule-review-sheet .sheet-head{margin-bottom:6px}#scheduleApprovalFooter{padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));gap:4px}#scheduleApprovalFooter .btn{min-height:44px}}

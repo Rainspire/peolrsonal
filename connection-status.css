@@ -1,0 +1,15 @@
+/* Text and symbols retain the meaning without relying on color. */
+.connection{flex-wrap:wrap;row-gap:2px}
+#onlineState.trip-connection-status{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;min-width:44px;max-width:100%;padding:8px 11px;
+  border:1px solid var(--line);border-radius:999px;
+  background:var(--soft);color:var(--ink);
+  font-size:12px;font-weight:800;line-height:1.35;white-space:nowrap;
+}
+#onlineState.trip-connection-status[data-state="online"]{background:var(--accent-soft);color:var(--accent)}
+#onlineState.trip-connection-status[data-state="offline"]{background:var(--danger-soft);color:var(--danger)}
+#onlineState.trip-connection-status[data-state="checking"],
+#onlineState.trip-connection-status[data-state="unknown"]{background:var(--gold-soft);color:var(--gold)}
+#onlineState.trip-connection-status:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media(max-width:370px){#onlineState.trip-connection-status{font-size:11px;padding-inline:9px}}
