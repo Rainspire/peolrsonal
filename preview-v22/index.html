@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="./receipt-ui.css">
 <link rel="stylesheet" href="./itinerary-map.css">
 <link rel="stylesheet" href="./button-help.css">
+<link rel="stylesheet" href="./connection-status.css">
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 이동</a>
@@ -23,14 +24,14 @@
   <div class="brand"><div><span class="eyebrow">TAIPEI POCKET <span class="version">V2.6</span></span><h1>타이베이 여행 수첩</h1></div><div class="head-actions"><button class="iconbtn" id="undoBtn" aria-label="직전 변경 되돌리기" disabled>↶</button><button class="iconbtn" id="searchBtn" aria-label="전체 검색">⌕</button><button class="iconbtn" id="settingsBtn" aria-label="설정">☷</button></div></div>
   <button class="fxbar" id="fxBtn" type="button"><span><b id="fxRate">환율 계산기</b><small id="fxStatus">불러오는 중</small></span><span class="fxOpen">계산기 <span aria-hidden="true">↗</span></span></button>
   <button type="button" class="receipt-background-status" id="receiptQueueStatus" data-action="receipt-queue" hidden></button>
-  <div class="connection"><span id="onlineState">연결 확인</span><button type="button" id="cacheBtn">오프라인 준비 확인</button></div>
+  <div class="connection"><button type="button" id="onlineState" aria-haspopup="dialog" data-hold-help="지금 연결 상태와 오프라인에서 쓸 수 있는 기능을 설명합니다.">연결 확인 중</button><button type="button" id="cacheBtn">오프라인 사용 준비 확인</button></div>
  </div>
 </header>
 <div class="banner" id="persistWarning" role="alert" hidden></div>
 <main class="wrap" id="main" tabindex="-1"></main>
 <footer class="attribution wrap"><a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer">Rates By Exchange Rate API</a><span> · 예상·현재 환산은 참고값 / 실제 지출 원화는 고정</span></footer>
 <nav class="bottom" aria-label="주 메뉴"><div class="nav-inner" id="nav"><span class="nav-indicator" aria-hidden="true"></span></div></nav>
-<dialog id="sheet"><div class="sheet-inner"><button type="button" class="grab" aria-label="손잡이를 아래로 끌어 닫기"></button><div class="sheet-head"><h2 id="sheetTitle"></h2><button class="iconbtn" id="closeSheet" aria-label="닫기">×</button></div><div id="sheetContent"></div></div></dialog>
+<dialog id="sheet" aria-labelledby="sheetTitle"><div class="sheet-inner"><button type="button" class="grab" aria-label="손잡이를 아래로 끌어 닫기"></button><div class="sheet-head"><h2 id="sheetTitle"></h2><button class="iconbtn" id="closeSheet" aria-label="닫기">×</button></div><div id="sheetContent"></div></div></dialog>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <noscript><p>여행 수첩을 사용하려면 JavaScript를 켜주세요.</p></noscript>
@@ -44,5 +45,6 @@
 <script src="./receipt-queue.js"></script>
 <script src="./receipt-ui.js"></script>
 <script src="./button-help.js"></script>
+<script src="./connection-status.js"></script>
 <script src="./app.js"></script>
 </body></html>
