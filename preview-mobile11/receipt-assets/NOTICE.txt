@@ -1,0 +1,25 @@
+Local receipt OCR dependencies (unmodified runtime files)
+
+Tesseract.js 6.0.1, Apache-2.0
+https://github.com/naptha/tesseract.js
+https://registry.npmjs.org/tesseract.js/-/tesseract.js-6.0.1.tgz
+See LICENSE-tesseract.txt and the two *.LICENSE.txt bundled dependency notices.
+
+Tesseract.js-core 6.0.0, Apache-2.0
+https://github.com/naptha/tesseract.js-core
+https://registry.npmjs.org/tesseract.js-core/-/tesseract.js-core-6.0.0.tgz
+See LICENSE-core.txt. These .wasm.js distributions include the WebAssembly bytes.
+
+Traditional Chinese and English language model data:
+@tesseract.js-data/chi_tra 1.0.0 and @tesseract.js-data/eng 1.0.0,
+4.0.0_best_int model files only. No package wrapper code is distributed.
+https://github.com/naptha/tessdata
+The npm package metadata labels its wrapper MIT. The upstream trained-data
+repository licenses the model data under Apache-2.0; LICENSE-tessdata.txt is
+copied from that repository. The models ultimately derive from Tesseract data.
+https://github.com/tesseract-ocr/tessdata
+
+manifest.json records npm package integrity, file bytes and SHA-256 hashes.
+No receipt photographs, OCR text, expense data, analytics trackers or remote OCR
+API credentials are included in this directory. Runtime downloads are public
+code/model assets from the app's own origin. Receipt processing remains local.
