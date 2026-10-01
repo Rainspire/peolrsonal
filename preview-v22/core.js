@@ -5,7 +5,7 @@ const MIN=60000, DAY=86400000;
 const clone=x=>JSON.parse(JSON.stringify(x));
 const included=x=>!['skipped','cancelled'].includes(x.status);
 const active=x=>included(x)&&x.status!=='done';
-const protectedItem=x=>Boolean(x.fixed||x.isFlight||(x.reservationStatus&&x.reservationStatus!=='none'));
+const protectedItem=x=>Boolean(x.fixed||x.isFlight||(!x.flexibleLodgingTime&&x.reservationStatus&&!['none','unconfirmed'].includes(x.reservationStatus)));
 const stop=x=>x.k==='s'&&!!x.place&&included(x);
 const knownCost=x=>included(x)&&!(x.k==='m'&&(x.routeStale||x.fareStatus==='unconfirmed'));
 const id=()=>globalThis.crypto?.randomUUID?.()||('x'+Date.now().toString(36)+Math.random().toString(36).slice(2));
