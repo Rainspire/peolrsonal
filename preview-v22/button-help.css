@@ -1,0 +1,52 @@
+/* Only explained buttons opt in; map surfaces, inputs and drag handles stay untouched. */
+.trip-button-help-ready {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.trip-button-help-pressing {
+  filter: brightness(.95);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, currentColor 18%, transparent);
+}
+.trip-button-help-pressing:not(.imap-pin) { scale: .98; }
+.trip-button-help-description {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+.trip-button-help-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(22rem, calc(100vw - 24px));
+  padding: 12px 15px;
+  border: 1px solid rgb(255 255 255 / .2);
+  border-radius: 14px;
+  background: #172f2b;
+  color: #fff;
+  box-shadow: 0 6px 24px rgb(0 0 0 / .22);
+  font: 500 14px/1.55 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  text-align: start;
+  letter-spacing: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trip-button-help-pressing:not(.imap-pin) { scale: none; }
+}
+@media (forced-colors: active) {
+  .trip-button-help-tooltip { background: Canvas; color: CanvasText; border: 2px solid CanvasText; }
+  .trip-button-help-pressing { outline: 2px solid Highlight; outline-offset: 2px; }
+}
