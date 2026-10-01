@@ -17,6 +17,34 @@ const nonnegative=x=>Number.isFinite(x)&&x>=0;
 function safeURL(value){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch(e){return null;}}
 function isFlight(x){return !!x&&(x.isFlight===true||x.travel==='flight'||(Array.isArray(x.seg)?x.seg:[]).some(s=>Array.isArray(s)&&s[0]==='air'));}
 function modeOf(x){if(!x)return null;if(isFlight(x))return 'flight';if(MODES.includes(x.travel))return x.travel;const kinds=(Array.isArray(x.seg)?x.seg:[]).filter(Array.isArray).map(s=>s[0]);if(kinds.length&&kinds.every(k=>k==='walk'))return 'walking';if(kinds.some(k=>['bike','bicycle','bicycling','cycling'].includes(k))&&kinds.every(k=>['walk','bike','bicycle','bicycling','cycling'].includes(k)))return 'bicycling';if(kinds.some(k=>k==='taxi'||k==='car'))return 'driving';if(kinds.length)return 'transit';return null;}
+// Compact itinerary facts must not depend on a free-text subtitle, fare, or an
+// opened route comparison. This read-only view never fills missing trip data.
+function movementSummary(trip,item){
+ const x=item||{},aliases={walking:['walking','도보'],walk:['walking','도보'],foot:['walking','도보'],driving:['driving','택시·우버'],car:['driving','차량'],taxi:['driving','택시'],uber:['driving','우버'],transit:['transit','대중교통'],bus:['transit','버스'],train:['transit','기차'],rail:['transit','기차'],mrt:['transit','MRT'],metro:['transit','MRT'],subway:['transit','MRT'],bicycling:['bicycling','자전거'],bike:['bicycling','자전거'],bicycle:['bicycling','자전거'],cycling:['bicycling','자전거'],flight:['flight','항공'],air:['flight','항공'],airplane:['flight','항공']};
+ const alias=key=>Object.prototype.hasOwnProperty.call(aliases,key)?aliases[key]:null;
+ const explicit=plain(x.travel)||plain(x.mode);let mode=null,modeLabel='이동수단 미확인';
+ if(x.isFlight===true){mode='flight';modeLabel='항공';}
+ else if(explicit){const named=alias(explicit.toLowerCase());if(named){[mode,modeLabel]=named;}}
+ else if(!x.routeStale){
+  const kinds=(Array.isArray(x.seg)?x.seg:[]).map(s=>Array.isArray(s)?plain(s[0]):'');
+  const groups=kinds.map(k=>['G','R','BL','O','BR','Y'].includes(k)?'transit':alias(k.toLowerCase())?.[0]);
+  if(groups.length&&groups.every(Boolean)){const rides=[...new Set(groups.filter(k=>k!=='walking'))];if(rides.length<=1){mode=rides[0]||'walking';modeLabel=LABELS[mode];}}
+ }
+ const endpoint=(side,unknown)=>{
+  let id=x[side];
+  if(!id){const anchor=(trip?.items||[]).find(n=>n.id===x[side+'StopId']);if(anchor?.k==='s'&&anchor.place&&(!x[side+'StopPlace']||x[side+'StopPlace']===anchor.place))id=anchor.place;}
+  const name=trip?.places?.[id]?.n;return typeof name==='string'&&plain(name)?plain(name):unknown;
+ };
+ const supplied=x.timeStatus==='supplied-plan',validSupplied=supplied&&currentSupplied(trip,x);
+ const unknownTime=x.routeStale||['unconfirmed','target'].includes(x.timeStatus)||x.durationMinutes===null||supplied&&!validSupplied;
+ const elapsed=(x.end-x.start)/MIN,duration=unknownTime?null:x.durationMinutes!==undefined?(positive(x.durationMinutes)?x.durationMinutes:null):positive(elapsed)?elapsed:null;
+ const explicitFare=['confirmed','user-confirmed','user-entered','saved-plan'].includes(x.fareStatus);
+ const unknownFare=x.fareStatus==='unconfirmed'||x.routeStale&&!explicitFare||supplied&&!validSupplied&&!explicitFare;
+ let cost=!unknownFare&&nonnegative(x.cost)&&(x.cost>0||explicitFare||validSupplied&&x.fareStatus==='supplied-plan'||mode==='walking')?x.cost:null;
+ if(validSupplied&&x.fareStatus==='supplied-plan'&&x.routePlanObservation.fare?.amount!==cost)cost=null;
+ const prepaid=['결제완료','예약 완료'].includes(x.pay)&&!positive(x.cost)&&!unknownFare;
+ return {fromName:endpoint('from','출발지 미확인'),toName:endpoint('to','도착지 미확인'),mode,modeLabel,durationMinutes:duration,durationLabel:duration===null?'이동시간 미확인':(validSupplied?'승인한 배정 ':'계획 ')+formatDuration(duration),cost:prepaid?null:cost,fareKind:prepaid?'prepaid':cost===null?'unknown':'planned'};
+}
 function placeSignature(p){if(!p)return null;return JSON.stringify([String(p.n||''),String(p.zh||''),String(p.addr||''),Array.isArray(p.ll)?p.ll:null]);}
 // Country metadata wins over conservative regional coordinate recognition. These
 // regions identify Korea/Taiwan only; they are not a general
@@ -167,5 +195,5 @@ function referenceGuides(){return clone([
  {id:'airport-mrt-time',label:'공항철도 공식 소요시간 안내',text:'제1터미널→타이베이역 열차 탑승시간 참고: 직달 약 35분, 일반 약 50분. 대기·역 접근·터미널 이동시간은 별도이며 실제 운행을 확인하세요.',sourceURL:'https://www.travel.taipei/en/information/taoyuanmetro',timetableURL:'https://www.tymetro.com.tw/tymetro-new/en/_pages/travel-guide/timetable-A1',checkedAt:'2026-10-01'},
  {id:'taipei-taxi',label:'타이베이시 공식 택시 요금 안내',text:'타이베이 일반 택시: 처음 1.25km NT$85, 이후 200m마다 NT$5, 시속 5km 미만 60초마다 NT$5. 23:00–06:00 탑승은 NT$20 추가. 경로 견적이나 우버 요금이 아니에요.',sourceURL:'https://english.dot.gov.taipei/News_Content.aspx?n=C4B79B3C50459041&s=BB2FB8006C15186B&sms=5B794C46F3CDE718',checkedAt:'2026-10-01'}
 ]);}
-return {buildOptions,resolveRoute,countryForPlace,isKoreaTaiwanRoute,remainingFlights,captureProvenance,routeKey,modeOf,isFlight,mapURL,formatDuration,formatCost,escapeHTML,safeURL,plain,referenceGuides,UNKNOWN};
+return {buildOptions,resolveRoute,countryForPlace,isKoreaTaiwanRoute,remainingFlights,captureProvenance,routeKey,modeOf,isFlight,movementSummary,mapURL,formatDuration,formatCost,escapeHTML,safeURL,plain,referenceGuides,UNKNOWN};
 });

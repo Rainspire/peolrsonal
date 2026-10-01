@@ -1,0 +1,11 @@
+/* One-column source-backed venue details, shared by itinerary and Places. */
+.poi-insight{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0;overflow-wrap:anywhere}
+.poi-heading{display:flex;flex-direction:column;gap:5px}.poi-heading>b{font-size:14px}.poi-rating{font-weight:800;color:var(--accent);font-size:13px;line-height:1.55}
+.poi-identity,.poi-freshness,.poi-disclaimer{font-size:11.5px;color:var(--muted);margin:6px 0;line-height:1.6}.poi-identity{font-weight:600}
+.poi-card-teaser{display:block;margin-top:7px;font-size:11.5px;font-weight:650;line-height:1.6;color:var(--accent);overflow-wrap:anywhere;white-space:normal}.poi-scope-label,.poi-card-alert,.poi-snapshot-label{display:block}.poi-snapshot-label{font-weight:400;color:var(--muted)}.poi-card-alert{color:var(--danger);font-weight:800}
+.poi-detail>summary{min-height:44px;display:flex;align-items:center;padding:9px 0;font-size:13px;font-weight:800;cursor:pointer;line-height:1.5}.poi-detail>summary:before{content:'＋';margin-right:8px}.poi-detail[open]>summary:before{content:'−'}
+.poi-detail-body{padding-top:2px}.poi-detail-body h4{font-size:13px;margin:13px 0 7px}.poi-detail-body p,.poi-detail-body li{font-size:12.5px;line-height:1.7}.poi-detail-body p{margin:5px 0}.poi-recommendations,.poi-cautions{padding-left:20px;margin:8px 0}.poi-recommendations li,.poi-cautions li{margin-bottom:12px}.poi-detail a:not(.btn),.poi-caution a{display:inline-flex;align-items:center;min-height:44px;font-size:12px;max-width:100%;overflow-wrap:anywhere}
+.poi-review{padding:12px 0;border-top:1px solid var(--line)}.poi-review>div{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11.5px;color:var(--muted)}.poi-review-tone{font-weight:750;color:var(--ink)}
+.poi-caution,.poi-scope{padding:10px 12px;margin:10px 0;border-radius:10px;background:var(--gold-soft);color:var(--gold);font-size:12px;line-height:1.65}.poi-caution.critical{background:var(--danger-soft);color:var(--danger)}.poi-caution a{display:flex}
+.poi-scope{font-weight:650}.poi-detail-body .actions{margin-top:10px}.poi-detail-body .actions>.btn{flex:1 1 150px;white-space:normal}
+@media(max-width:380px){.poi-insight{padding:11px}.poi-detail-body .actions>.btn{flex-basis:100%}}

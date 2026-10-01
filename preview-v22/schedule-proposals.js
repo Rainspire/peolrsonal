@@ -126,9 +126,12 @@ function propose(trip,dayId=null,opts={}){
   // Do not repair unrelated pre-existing short arrival buffers merely because
   // another part of the day has a clash. A segment changes only for an actual
   // overlap (including its immutable boundary) or an explicit deadline.
-  let oldEdge=frontier,needsWork=false;
+  // A target/layout window is not an observed journey duration. It may bound a
+  // genuinely affected repair (which the dependency check blocks), but must
+  // never create a new repair by itself elsewhere in the selected day.
+  let oldEdge=previous&&uncertain(previous.x)?-Infinity:frontier,needsWork=false;
   for(const n of nodes){if(n.old.start<oldEdge||n.old.start<n.bounds.start||n.old.end>n.bounds.end||n.old.start>n.bounds.latestStart)needsWork=true;oldEdge=Math.max(oldEdge,n.old.end);}
-  if(next&&oldEdge>next.start)needsWork=true;
+  if(next&&!uncertain(next.x)&&oldEdge>next.start)needsWork=true;
   if(!needsWork){block=[];return;}
   const forward=()=>{let cursor=lower;for(const n of nodes){n.start=Math.max(n.old.start,cursor,n.bounds.start);n.end=n.start+n.duration;cursor=n.end;}return cursor;};
   // Consume explicitly designated rest only when a shift needs it; ordinary
@@ -173,16 +176,29 @@ function propose(trip,dayId=null,opts={}){
   return {id:x.id,title:x.title,dayId:x.dayId,before:itemTimes(old),after:itemTimes(x),oldStart:old.start,oldEnd:old.end,start:x.start,end:x.end,tz:x.tz,endTz:x.endTz,shiftMinutes:(x.start-old.start)/MIN,durationBefore:(old.end-old.start)/MIN,durationAfter:(x.end-x.start)/MIN,reasons:whyList,reason:whyList.join(' · ')};
  }).sort((x,y)=>x.before.start-y.before.start||String(x.id).localeCompare(String(y.id)));
  const changedIds=new Set(changes.map(x=>x.id));
- for(let i=0;i<a.length;i++){const x=a[i].x;if(!relevant(x,null,dayId)||!uncertain(x)||x.status==='done')continue;
-  const v=issue('unknown-travel',[x.id],'“'+x.title+'”의 이동시간이 미확정입니다. 실제 경로의 소요시간을 확인해 입력한 뒤 조정안을 다시 만드세요.');
-  // A known immutable appointment separates independent portions of a day.
-  // Do not let an unrelated evening route block a safe morning recommendation.
-  const boundary=n=>n.x.dayId!==x.dayId||!uncertain(n.x)&&(protectedItem(n.x)||history(n.x));
+ for(let i=0;i<a.length;i++){const x=a[i].x;if(!uncertain(x)||x.status==='done')continue;
+  // An unknown journey depends on its departure/arrival boundary, not every
+  // flexible card until the next reservation. In particular, delaying the
+  // start of sleep while retaining its end does not affect a later departure.
+  // Keep exact stop anchors (including overnight ones), adjacent known legs,
+  // and conservative interval crossings. Never treat an unknown as 0 minutes.
   let left=i-1,right=i+1;
-  while(left>=0&&!boundary(a[left]))left--;
-  while(right<a.length&&!boundary(a[right]))right++;
-  const dependencyIds=new Set(a.slice(left+1,right).map(n=>n.x.id));
-  const affected=changes.some(c=>dependencyIds.has(c.id))||original.some(c=>c.ids.some(id=>dependencyIds.has(id)));
+  while(left>=0&&uncertain(a[left].x))left--;
+  while(right<a.length&&uncertain(a[right].x))right++;
+  const fromIds=new Set([x.fromStopId,a[left]?.x.id].filter(Boolean)),toIds=new Set([x.toStopId,a[right]?.x.id].filter(Boolean));
+  // Unbound multi-leg input still needs the nearest visit's departure/arrival
+  // protected, even if a known movement separates it from the unknown leg.
+  if(!x.fromStopId){let j=i-1;while(j>=0&&a[j].x.k==='m')j--;if(j>=0)fromIds.add(a[j].x.id);}
+  if(!x.toStopId){let j=i+1;while(j<a.length&&a[j].x.k==='m')j++;if(j<a.length)toIds.add(a[j].x.id);}
+  const crosses=(start,end)=>x.start===x.end?start<x.start&&x.start<end:start<x.end&&x.start<end;
+  const dependencies=changes.filter(c=>fromIds.has(c.id)&&c.before.end!==c.after.end||toIds.has(c.id)&&c.before.start!==c.after.start||crosses(Math.min(c.before.start,c.after.start),Math.max(c.before.end,c.after.end))).map(c=>c.id);
+  // An impossible segment may have no preview changes; still explain the
+  // nearby unknown instead of suggesting that its layout timestamp is proof.
+  const touches=id=>{const n=originalById.get(id);return fromIds.has(id)||toIds.has(id)||n&&crosses(n.start,n.end);};
+  const unresolved=original.filter(c=>c.ids.some(touches));
+  const affected=dependencies.length>0||!changes.length&&unresolved.length>0;
+  if(!affected&&!relevant(x,null,dayId))continue;
+  const v=issue('unknown-travel',[x.id],affected?'“'+x.title+'”의 이동시간이 필요합니다. 이 구간을 확인한 뒤 다시 비교하세요.':'“'+x.title+'”의 이동시간은 미확인입니다. 이번 시간 변경과는 별도로 확인하세요.',{dependencyIds:[...new Set(dependencies)]});
   add(affected?decisions:warnings,v);
  }
  const scoped=a.filter(n=>relevant(n.x,null,dayId));
