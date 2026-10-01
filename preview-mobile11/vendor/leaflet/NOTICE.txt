@@ -1,0 +1,9 @@
+Leaflet 1.9.4 (BSD-2-Clause), vendored from the official npm leaflet package.
+Package SHA-1: 23fae724e282fa25745aff82ca4d394748db7d8d
+https://leafletjs.com/
+https://registry.npmjs.org/leaflet/-/leaflet-1.9.4.tgz
+
+The package contains code and UI images only, not map tiles.
+OpenStreetMap tiles are requested only after the online-map button is pressed.
+Tiles must not be downloaded in bulk, preloaded, or included in the PWA cache.
+https://operations.osmfoundation.org/policies/tiles/
