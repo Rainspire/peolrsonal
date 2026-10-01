@@ -1,0 +1,1 @@
+Leaflet 1.9.4 UI images, distributed under the BSD-2-Clause license in ../LICENSE. These are interface icons, not map tiles.
