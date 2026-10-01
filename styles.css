@@ -70,3 +70,12 @@ button:disabled{opacity:.42;cursor:not-allowed}
 #scheduleApprovalErrorTop:empty,#scheduleApprovalError:empty{display:none}
 @media(max-width:380px){#sheet.schedule-review-sheet .sheet-inner{padding-left:12px;padding-right:12px}#sheet.schedule-review-sheet .sheet-head h2{font-size:18px}#scheduleApprovalFooter .btn{font-size:13px}}
 @media(max-height:420px){#sheet.schedule-review-sheet .grab{margin-bottom:7px}#sheet.schedule-review-sheet .sheet-head{margin-bottom:6px}#scheduleApprovalFooter{padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));gap:4px}#scheduleApprovalFooter .btn{min-height:44px}}
+
+/* Unknown-route facts remain full-width at phone widths and large text sizes. */
+.schedule-unknown-route{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.schedule-unknown-route>b{display:block;line-height:1.5;margin-bottom:6px}
+.schedule-route-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:12px}
+.schedule-route-fields .field{min-width:0;margin:0;line-height:1.5;overflow-wrap:anywhere}
+.schedule-route-fields input,.schedule-route-fields select{width:100%;max-width:100%;min-width:0;min-height:48px}
+#scheduleUnknownRoutes{min-width:0}#scheduleUnknownRoutes>summary{overflow-wrap:anywhere}
+@media(max-width:480px){.schedule-comparison>.grid2{grid-template-columns:minmax(0,1fr);gap:12px}.schedule-comparison [data-before-time],.schedule-comparison [data-after-time]{margin:4px 0 0;overflow-wrap:anywhere}}
