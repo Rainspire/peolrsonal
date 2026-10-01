@@ -86,3 +86,5 @@ button:disabled{opacity:.42;cursor:not-allowed}
 .event.move [data-movement-mode]{font-weight:800;color:var(--ink)}
 .event.move .event-sub{line-height:1.65}
 .event.move .event-money small{display:inline-block;margin-left:4px}
+
+.release-notes{padding-left:21px;overflow-wrap:anywhere}.release-notes li{margin:14px 0}.release-notes p{font-size:13px;margin:5px 0;line-height:1.7}
