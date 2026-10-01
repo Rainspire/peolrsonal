@@ -25,3 +25,13 @@ button:disabled{opacity:.42;cursor:not-allowed}
 .current-fx{font-size:11px!important;font-weight:400!important;color:var(--muted)!important}
 .expense{flex-wrap:wrap}.expense>div:first-child{flex-basis:42%}.expense .expense-fixed{flex:1;min-width:112px}
 .check{min-height:44px}.check input{flex-shrink:0}
+/* v2.2: communication tools keep primary actions within reach */
+.quick-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.quick-actions .btn{flex:1;min-height:48px}
+.source-details{margin:8px 0 12px;border:1px solid var(--line);border-radius:12px;padding:0 12px}.source-details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}.source-details .rich{padding-bottom:12px}
+.place-summary{width:100%;text-align:left;justify-content:flex-start;white-space:normal;margin:8px 0}
+.communication{padding:8px 0;overflow-wrap:anywhere}.communication-ko{font-size:17px;line-height:1.5;font-weight:700;margin:0 0 16px;color:var(--ink)}
+.place-zh{font-size:26px;font-weight:700;line-height:1.4;margin:8px 0 20px;overflow-wrap:anywhere}.place-address{font-size:19px;line-height:1.6;margin:8px 0 20px;overflow-wrap:anywhere}
+.communication .driver-name{font-size:clamp(28px,7vw,42px);line-height:1.35;text-align:left}.communication .driver-address{font-size:clamp(22px,5.5vw,30px);line-height:1.5;text-align:left;overflow-wrap:anywhere}.communication .driver-phrase{font-size:24px;line-height:1.5;text-align:left;margin:24px 0 8px}
+.phrase-list{display:grid;gap:8px;margin-top:16px}.phrase-item{width:100%;min-height:64px;display:grid;gap:6px;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer}.phrase-item b{font-size:16px}.phrase-item span{font-size:14px;color:var(--muted)}.phrase-large{font-size:clamp(28px,7vw,42px);font-weight:700;line-height:1.35;margin:24px 0 32px;overflow-wrap:anywhere;user-select:text}.communication .actions .btn{min-height:48px;white-space:normal}
+.update-banner{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--accent-soft);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}.update-banner[hidden]{display:none}.update-banner .btn{min-height:44px;flex:none}.update-banner small{display:block;font-size:12px;margin-top:4px}
+@media(max-width:380px){.update-banner{flex-wrap:wrap}.update-banner .btn{width:100%}.communication .actions{flex-direction:column}.communication .actions .btn{width:100%}}
