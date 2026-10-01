@@ -52,3 +52,20 @@ button:disabled{opacity:.42;cursor:not-allowed}
 .route-patch-list{display:grid;gap:12px;margin-top:14px}.route-patch-leg h3{margin:0;font-size:16px}.route-patch-leg .grid2 p{font-weight:750;margin:5px 0}.route-patch-leg .field{margin-top:10px}.route-patch-adjust{margin-top:10px;border-top:1px solid var(--line)}.route-patch-adjust summary{min-height:44px;display:flex;align-items:center;font-size:12px;cursor:pointer;color:var(--muted)}.route-patch-day{margin-top:20px;font-size:17px}#routePatchComparison{margin-bottom:15px}#routePatchOverlap[hidden]{display:none}
 
 .route-patch-facts{margin:6px 0 8px}.route-patch-facts p{margin:3px 0}.route-patch-source{border-top:1px solid var(--line);margin-top:8px}.route-patch-source>summary{min-height:44px;padding:12px 0;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer}.route-patch-source-body{display:grid;gap:12px;padding:0 0 10px;overflow-wrap:anywhere}.route-patch-source-body p{margin:0 0 8px;white-space:pre-wrap}.route-patch-source-body b{display:block;margin-bottom:5px}.route-patch-warning{color:var(--danger);margin:8px 0;overflow-wrap:anywhere}.route-patch-leg .route-patch-adjust{margin-top:0}
+/* Recommendation review: the decision stays outside its independently scrolling content. */
+#sheet.schedule-review-sheet{display:flex;flex-direction:column;overflow:hidden;bottom:var(--schedule-keyboard-offset,0px);height:min(88dvh,calc(var(--schedule-viewport-height,100dvh) - 12px));max-height:calc(var(--schedule-viewport-height,100dvh) - 12px)}
+#sheet.schedule-review-sheet .sheet-inner{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;padding:10px 18px 0;width:100%}
+#sheet.schedule-review-sheet .grab,#sheet.schedule-review-sheet .sheet-head{flex-shrink:0}
+#sheet.schedule-review-sheet .sheet-head{margin-bottom:10px}
+#sheet.schedule-review-sheet #sheetContent{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+#scheduleReviewScroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scroll-padding-block:12px;padding-bottom:16px;outline-offset:-2px}
+#scheduleReviewScroll>details,#scheduleChangedItems+.notice{margin-top:12px}
+#scheduleChangedItems{margin:14px 0}
+#scheduleConflictCause p{margin:6px 0 0;line-height:1.65}
+#scheduleApprovalFooter{flex-shrink:0;border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);display:flex;flex-direction:column;gap:7px}
+#scheduleApprovalFooter p{margin:0;overflow-wrap:anywhere}
+#scheduleApprovalFooter .btn{min-height:48px;white-space:normal;flex-shrink:0}
+#scheduleApprovalFooter [hidden]{display:none!important}
+#scheduleApprovalError:empty{display:none}
+@media(max-width:380px){#sheet.schedule-review-sheet .sheet-inner{padding-left:12px;padding-right:12px}#sheet.schedule-review-sheet .sheet-head h2{font-size:18px}#scheduleApprovalFooter .btn{font-size:13px}}
+@media(max-height:420px){#sheet.schedule-review-sheet .grab{margin-bottom:7px}#sheet.schedule-review-sheet .sheet-head{margin-bottom:6px}#scheduleApprovalFooter{padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));gap:4px}#scheduleApprovalFooter .btn{min-height:44px}}
