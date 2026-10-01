@@ -271,7 +271,12 @@ function driver(placeId,itemId=null){const p=state.trip?.places[placeId];if(!p)r
 }
 const conversationGroups={hotel:['숙소에서','체크인 · 객실 요청 · 짐 보관'],restaurant:['식당에서','입장 · 주문 · 요청 · 계산'],airport:['공항에서','체크인 · 탑승구 · 수하물'],transport:['택시·MRT에서','목적지 · 승차 · 이동'],shopping:['쇼핑할 때','가격 · 사이즈 · 결제'],sightseeing:['관광할 때','입장권 · 사진 · 길 찾기'],help:['도움이 필요할 때','천천히 말하기 · 설명 · 도움']};
 let conversationLanguage='zh',conversationCategory='',conversationSubgroup='',conversationQuery='';
-function conversationRows(){const rows=TRAVEL_PHRASES.slice();if(conversationLanguage==='en'){for(const p of TaipeiUX.PHRASES){if(!rows.some(x=>x.ko===p.ko||x.en===p.en))rows.push({...p,id:'en_'+p.id,category:p.category==='move'?'transport':p.category,subgroup:p.category==='hotel'?'객실 요청':p.category==='restaurant'?'주문·요청':'기타 표현'});}}return rows;}
+function conversationRows(){
+ const rows=TRAVEL_PHRASES.slice();
+ const legacyGroups={bill:'계산·결제',card:'계산·결제',receipt:'계산·결제',takeaway:'음식 요청',water:'입장·주문',menu:'입장·주문',recommend:'입장·주문',ingredient:'음식 요청',allergen:'음식 요청',spicy:'음식 요청',towels:'객실 요청','hotel-water':'객실 요청',luggage:'짐 보관',checkin:'체크인·체크아웃',checkout:'체크인·체크아웃',clean:'객실 요청',wifi:'객실 요청','wifi-broken':'객실 요청',ac:'객실 요청','checkout-time':'체크인·체크아웃',bag:'결제·포장',price:'상품 문의',color:'상품 문의',size:'상품 문의',address:'택시',dropoff:'택시',duration:'이동 문의',restroom:'길 찾기',slow:'말이 통하지 않을 때',help:'도움·감사'};
+ if(conversationLanguage==='en'){for(const p of TaipeiUX.PHRASES){const category=['slow','help'].includes(p.id)?'help':p.category==='move'?'transport':p.category;if(!rows.some(x=>x.category===category&&(x.ko===p.ko||x.en===p.en)))rows.push({...p,id:'en_'+p.id,category,subgroup:legacyGroups[p.id]||'기타 표현'});}}
+ return rows;
+}
 function conversationHeader(){return `<div class="conversation-languages" role="group" aria-label="회화 언어"><button class="btn ${conversationLanguage==='zh'?'primary':''}" id="languageZh" aria-pressed="${conversationLanguage==='zh'}">중국어 · 번체</button><button class="btn ${conversationLanguage==='en'?'primary':''}" id="languageEn" aria-pressed="${conversationLanguage==='en'}">영어</button></div>`;}
 function bindConversationLanguage(){for(const [id,lang] of [['languageZh','zh'],['languageEn','en']])$('#'+id).onclick=()=>{conversationLanguage=lang;conversationSubgroup='';conversationQuery='';conversationView();};}
 function conversationHome(lang='zh'){conversationLanguage=lang;conversationCategory='';conversationSubgroup='';conversationQuery='';conversationView();}

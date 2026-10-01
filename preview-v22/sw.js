@@ -1,6 +1,6 @@
 'use strict';
 // Bump VERSION whenever any app-shell asset changes. Does not touch user storage.
-const VERSION='2.3.0-phrases01',PREFIX='taipei-pocket:'+self.registration.scope+':',CACHE=PREFIX+VERSION;
+const VERSION='2.3.0-phrases02',PREFIX='taipei-pocket:'+self.registration.scope+':',CACHE=PREFIX+VERSION;
 const PATHS=['./','./index.html','./core.js','./app.js','./ux.js','./styles.css','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable.png'];
 const URLS=PATHS.map(p=>new URL(p,self.registration.scope).href);
 self.addEventListener('install',e=>e.waitUntil((async()=>{try{const cache=await caches.open(CACHE);await cache.addAll(URLS.map(url=>new Request(url,{cache:'reload'})));}catch(error){await caches.delete(CACHE);throw error;}})()));
