@@ -7,7 +7,7 @@ const included=x=>!['skipped','cancelled'].includes(x.status);
 const active=x=>included(x)&&x.status!=='done';
 const protectedItem=x=>Boolean(x.fixed||x.isFlight||(!x.flexibleLodgingTime&&x.reservationStatus&&!['none','unconfirmed'].includes(x.reservationStatus)));
 const stop=x=>x.k==='s'&&!!x.place&&included(x);
-const knownCost=x=>included(x)&&!(x.k==='m'&&(x.routeStale||x.fareStatus==='unconfirmed'));
+const knownCost=x=>included(x)&&!(x.k==='m'&&(x.fareStatus==='unconfirmed'||x.routeStale&&!['confirmed','user-confirmed','user-entered','saved-plan'].includes(x.fareStatus)));
 const id=()=>globalThis.crypto?.randomUUID?.()||('x'+Date.now().toString(36)+Math.random().toString(36).slice(2));
 function localInput(ts,tz=8){return new Date(ts+tz*3600000).toISOString().slice(0,16);}
 function parseLocal(text,tz=8){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(text))throw Error('날짜와 시간을 입력하세요.');const t=Date.parse(text+':00Z')-tz*3600000;if(!Number.isFinite(t))throw Error('날짜 형식이 잘못되었습니다.');return t;}
@@ -47,9 +47,19 @@ function routeFor(trip,x){
 /* Preserve original multi-leg directions by their stop anchors. Only affected
    adjacency is replaced; flights, completed movements and unbound boundary legs
    remain separate barriers. Calling this before an edit captures the old day. */
+function routeAdjacencies(trip,dayId){
+ const result=[];let previous=null;
+ for(const x of dayItems(trip,dayId)){
+  if(stop(x)){if(previous&&previous.place!==x.place)result.push([previous.id,previous.place,x.id,x.place].join('|'));previous=x;}
+  else if(included(x)&&!(x.k==='m'&&!protectedItem(x)&&!['done','running'].includes(x.status)))previous=null;
+ }
+ return result;
+}
+function visitTopologyChanged(before,after){return before.dayId!==after.dayId||before.k!==after.k||before.place!==after.place||included(before)!==included(after);}
 function bindRouteAnchors(trip,dayId=null){
  const days=dayId?[{id:dayId}]:trip.days;
- for(const d of days){const a=dayItems(trip,d.id);
+ trip.routeAdjacency=trip.routeAdjacency&&typeof trip.routeAdjacency==='object'&&!Array.isArray(trip.routeAdjacency)?trip.routeAdjacency:{};
+ for(const d of days){const a=dayItems(trip,d.id);trip.routeAdjacency[d.id]=routeAdjacencies(trip,d.id);
   for(let i=0;i<a.length;i++){const m=a[i];
    if(m.k!=='m'||m.routeManaged!==undefined||protectedItem(m))continue;
    let l=i-1,r=i+1;
@@ -73,18 +83,21 @@ function unconfirmedRoute(trip,from,to){
 function rebuildDayRoutes(trip,dayId){
  const a=dayItems(trip,dayId);if(!a.length)return trip;
  const managed=m=>m.k==='m'&&m.routeManaged&&!protectedItem(m)&&!['done','running'].includes(m.status);
- const pool=a.filter(managed),skeleton=a.filter(x=>!managed(x)),out=[];let previous=null;
+ const pool=a.filter(managed),skeleton=a.filter(x=>!managed(x)),out=[],oldAdjacency=new Set(trip.routeAdjacency?.[dayId]||[]);let previous=null;
  for(const x of skeleton){
   if(stop(x)){
    if(previous&&previous.place!==x.place){
     const exact=pool.filter(m=>included(m)&&m.fromStopId===previous.id&&m.toStopId===x.id&&m.fromStopPlace===previous.place&&m.toStopPlace===x.place);
-    out.push(...(exact.length?exact:[unconfirmedRoute(trip,previous,x)]));
+    const unchanged=oldAdjacency.has([previous.id,previous.place,x.id,x.place].join('|'));
+    // A note/time edit must not invent routes for pre-existing walking gaps.
+    out.push(...(exact.length?exact:unchanged?[]:[unconfirmedRoute(trip,previous,x)]));
    }
    out.push(x);previous=x;
   }else{out.push(x);if(included(x))previous=null;} // inactive cards do not break a route
  }
  const first=trip.items.findIndex(x=>x.dayId===dayId);
  trip.items=trip.items.filter(x=>x.dayId!==dayId);trip.items.splice(first,0,...out);
+ if(trip.routeAdjacency)trip.routeAdjacency[dayId]=routeAdjacencies(trip,dayId);
  return trip;
 }
 function repairRoutes(trip,dayId,changedId){
@@ -97,13 +110,13 @@ function repairRoutes(trip,dayId,changedId){
 }
 function updateVisit(trip,itemId,patch){
  const t=clone(trip);bindRouteAnchors(t);const x=t.items.find(i=>i.id===itemId);
- if(!x)throw Error('일정이 없습니다.');const oldDay=x.dayId;
+ if(!x)throw Error('일정이 없습니다.');const oldDay=x.dayId,before=clone(x);
  if(x.k!=='s'&&patch.dayId&&patch.dayId!==oldDay)throw Error('이동카드는 날짜를 옮길 수 없습니다. 방문 일정을 이동하세요.');
  if(patch.dayId&&patch.dayId!==oldDay&&x.status!=='pending')throw Error('진행 전 일정만 날짜를 이동할 수 있습니다.');
  Object.assign(x,patch);
  if(!t.days.some(d=>d.id===x.dayId))throw Error('날짜를 확인하세요.');
- t.items.sort((a,b)=>t.days.findIndex(d=>d.id===a.dayId)-t.days.findIndex(d=>d.id===b.dayId)||a.start-b.start);
- rebuildDayRoutes(t,oldDay);if(x.dayId!==oldDay)rebuildDayRoutes(t,x.dayId);
+ if(x.dayId!==oldDay)t.items.sort((a,b)=>t.days.findIndex(d=>d.id===a.dayId)-t.days.findIndex(d=>d.id===b.dayId)||a.start-b.start);
+ if(visitTopologyChanged(before,x)){rebuildDayRoutes(t,oldDay);if(x.dayId!==oldDay)rebuildDayRoutes(t,x.dayId);}
  validateTrip(t);return t;
 }
 function duplicateVisit(trip,itemId){
@@ -195,5 +208,5 @@ function budget(trip,settings={},expenses=[]){
  const actualKrw=expenses.reduce((s,x)=>s+(expenseKRW(x)??0),0),unconfirmedKrw=expenses.filter(x=>expenseKRW(x)===null).length;
  return {planned,actual,actualKrw,unconfirmedKrw,remaining:planned-actual,cashSpent,cashRemaining:(settings.cashOpening??0)+(settings.cashAdded??0)-cashSpent,cashRecommended:Math.ceil((cashBase+(settings.whisky??6000)+(settings.gifts??2500)*.4)*1.1/1000)*1000};
 }
-return {MIN,DAY,clone,id,included,knownCost,active,protectedItem,stop,bindRouteAnchors,rebuildDayRoutes,updateVisit,duplicateVisit,reorderTo,delayFingerprint,applyDelay,expenseKRW,normalizeExpense,localInput,parseLocal,duration,dayItems,validateTrip,mapsURL,placeQuery,routeFor,repairRoutes,conflicts,proposeDelay,reorder,budget};
+return {MIN,DAY,clone,id,included,knownCost,active,protectedItem,stop,routeAdjacencies,visitTopologyChanged,bindRouteAnchors,rebuildDayRoutes,updateVisit,duplicateVisit,reorderTo,delayFingerprint,applyDelay,expenseKRW,normalizeExpense,localInput,parseLocal,duration,dayItems,validateTrip,mapsURL,placeQuery,routeFor,repairRoutes,conflicts,proposeDelay,reorder,budget};
 });
