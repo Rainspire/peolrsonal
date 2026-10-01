@@ -62,7 +62,7 @@ button:disabled{opacity:.42;cursor:not-allowed}
 #scheduleReviewScroll>details,#scheduleChangedItems+.notice{margin-top:12px}
 #scheduleChangedItems{margin:14px 0}
 #scheduleConflictCause p{margin:6px 0 0;line-height:1.65}
-#scheduleApprovalTop{margin:12px 0 14px;display:flex;flex-direction:column;gap:7px}
+#scheduleApprovalTop{margin:0 0 14px;display:flex;flex-direction:column;gap:7px}
 #scheduleApprovalFooter{flex-shrink:0;border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface);display:flex;flex-direction:column;gap:7px}
 #scheduleApprovalTop p,#scheduleApprovalFooter p{margin:0;overflow-wrap:anywhere}
 #scheduleApprovalTop .btn,#scheduleApprovalFooter .btn{min-height:48px;white-space:normal;flex-shrink:0}
