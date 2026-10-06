@@ -1,6 +1,6 @@
 'use strict';
 // Bump VERSION whenever any app-shell asset changes. Does not touch user storage.
-const VERSION='2.9.0',PREFIX='taipei-pocket:'+self.registration.scope+':',CACHE=PREFIX+VERSION;
+const VERSION='2.9.1',PREFIX='taipei-pocket:'+self.registration.scope+':',CACHE=PREFIX+VERSION;
 const PATHS=['./','./navigation.js','./delivery-copy.js','./delivery-copy.css','./closure-plan-patch.js','./place-reviews-data.js','./place-reviews.js','./place-reviews.css','./index.html','./core.js','./app.js','./ux.js','./schedule-proposals.js','./receipts.js','./receipt-ui.js','./receipt-ui.css','./receipt-queue.js','./route-options.js','./route-plan-patch.js','./itinerary-map.js','./itinerary-map.css','./button-help.js','./button-help.css','./connection-status.js','./connection-status.css','./vendor/leaflet/leaflet.js','./vendor/leaflet/leaflet.css','./vendor/leaflet/images/layers.png','./vendor/leaflet/images/layers-2x.png','./vendor/leaflet/images/marker-icon.png','./vendor/leaflet/images/marker-icon-2x.png','./vendor/leaflet/images/marker-shadow.png','./styles.css','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable.png'];
 const URLS=PATHS.map(p=>new URL(p,self.registration.scope).href);
 const SHELL_URLS=['./','./index.html'].map(p=>new URL(p,self.registration.scope).href);
