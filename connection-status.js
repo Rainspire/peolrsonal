@@ -1,7 +1,9 @@
 /* Live connectivity is deliberately separate from app-shell readiness.
  * IMPORTANT: connection-check.txt must NEVER enter a service-worker precache or
  * offline fallback. The SW should let this path go straight to the network.
- * A no-store, nonce-bearing GET carries no trip data, cookies, or referrer.
+ * A no-store, nonce-bearing GET carries no trip data or referrer.
+ * Cookies are omitted by default; an owner-private host may explicitly reuse
+ * its existing same-origin login session for this same-origin marker only.
  * A successful check proves this app's host was reachable at checkedAt only;
  * it cannot promise that maps, exchange-rate providers, or booking sites work.
  */
@@ -32,6 +34,7 @@
     if (installations.has(button)) installations.get(button).destroy();
     const onExplain = typeof options.onExplain === 'function' ? options.onExplain : function () {};
     const onChange = typeof options.onChange === 'function' ? options.onChange : function () {};
+    const credentials = options.authenticatedHost === true ? 'same-origin' : 'omit';
     const now = () => win.Date.now();
     const browserOnline = () => win.navigator.onLine !== false;
     let destroyed = false, sequence = 0, pending = null, expiryTimer = null;
@@ -166,7 +169,7 @@
       }, TIMEOUT_MS);
       try {
         const result = win.fetch(request.url, {
-          method: 'GET', mode: 'same-origin', cache: 'no-store', credentials: 'omit',
+          method: 'GET', mode: 'same-origin', cache: 'no-store', credentials,
           redirect: 'error', referrerPolicy: 'no-referrer', signal: request.controller.signal
         });
         Promise.resolve(result).then(response => acceptResponse(request, response)).catch(() => {
