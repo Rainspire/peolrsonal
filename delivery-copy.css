@@ -1,0 +1,14 @@
+.delivery-copy-help{font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 14px}
+.delivery-copy-control{display:inline;white-space:normal}
+.rich .delivery-copy-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;max-width:100%;margin:4px 0 4px 5px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--accent);font:inherit;font-size:12px;font-weight:700;line-height:1.4;vertical-align:middle;cursor:pointer;touch-action:manipulation}
+.rich td .delivery-copy-button{margin-left:0}
+.rich .delivery-copy-name{display:inline-flex;flex-wrap:wrap;justify-content:flex-start;gap:5px;margin-left:0;text-align:left;overflow-wrap:anywhere}
+.delivery-copy-name>.zh{font:inherit;font-size:13px;color:var(--ink);overflow-wrap:anywhere;min-width:0;max-width:100%}
+.delivery-copy-label{font-size:11px;white-space:normal;overflow-wrap:anywhere}
+.delivery-copy-missing{display:block;margin:6px 0;color:var(--muted);font-size:11px;font-weight:400;line-height:1.5}
+.delivery-copy-button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.delivery-copy-button[aria-busy=true]{cursor:progress}
+.delivery-copy-manual{display:block;margin:6px 0 10px;font-size:12px;font-weight:400;line-height:1.6;color:var(--ink);overflow-wrap:anywhere}
+.delivery-copy-manual>span{display:block;margin-bottom:6px}
+.rich .delivery-copy-manual textarea{display:block;width:100%;max-width:100%;min-height:72px;font-size:16px;line-height:1.6;resize:vertical;user-select:text;-webkit-user-select:text}
+.delivery-copy-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
